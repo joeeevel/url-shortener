@@ -28,18 +28,26 @@ function cleanupMemory(): void {
 export let redis: Redis | null = null;
 
 if (REDIS_URL) {
-  const isTls = REDIS_URL.startsWith('rediss://');
-  redis = new Redis(REDIS_URL, {
-    maxRetriesPerRequest: 1,
-    retryStrategy() {
-      return null;
-    },
-    lazyConnect: true,
-    connectTimeout: 5000,
-    enableOfflineQueue: false,
-    ...(isTls ? { tls: { rejectUnauthorized: false } } : {}),
-  });
-  redis.on('error', () => {});
+  try {
+    const url = new URL(REDIS_URL);
+    redis = new Redis({
+      host: url.hostname,
+      port: Number(url.port) || 6379,
+      username: url.username || undefined,
+      password: url.password ? decodeURIComponent(url.password) : undefined,
+      maxRetriesPerRequest: 1,
+      retryStrategy() {
+        return null;
+      },
+      lazyConnect: true,
+      connectTimeout: 5000,
+      enableOfflineQueue: false,
+      ...(url.protocol === 'rediss:' ? { tls: { rejectUnauthorized: false } } : {}),
+    });
+    redis.on('error', () => {});
+  } catch {
+    // REDIS_URL is invalid, skip Redis
+  }
 }
 
 export function urlKey(shortCode: string): string {
