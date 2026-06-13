@@ -84,7 +84,7 @@ describe('POST /shorten', () => {
       .send({});
 
     expect(res.status).toBe(400);
-    expect(res.body.error).toBe('URL is required');
+    expect(res.body.error).toBe('Required');
   });
 
   it('returns 400 when URL format is invalid', async () => {
@@ -96,6 +96,14 @@ describe('POST /shorten', () => {
     expect(res.body.error).toBe('Invalid URL format');
   });
 
+  it('returns 400 for non-string URL', async () => {
+    const res = await request(app)
+      .post('/shorten')
+      .send({ url: 123 });
+
+    expect(res.status).toBe(400);
+  });
+
   it('returns rate limit headers', async () => {
     const res = await request(app)
       .post('/shorten')
@@ -103,6 +111,32 @@ describe('POST /shorten', () => {
 
     expect(res.headers['ratelimit-limit']).toBe('10');
     expect(res.headers['ratelimit-remaining']).toBeDefined();
+  });
+});
+
+describe('Security headers', () => {
+  it('includes helmet security headers', async () => {
+    const res = await request(app).get('/health');
+
+    expect(res.headers['x-content-type-options']).toBe('nosniff');
+    expect(res.headers['x-frame-options']).toBe('SAMEORIGIN');
+    expect(res.headers['x-download-options']).toBe('noopen');
+  });
+
+  it('includes CORS headers', async () => {
+    const res = await request(app).get('/health');
+
+    expect(res.headers['access-control-allow-origin']).toBe('*');
+  });
+
+  it('rejects oversized request body', async () => {
+    const largePayload = { url: 'https://example.com/' + 'x'.repeat(20000) };
+
+    const res = await request(app)
+      .post('/shorten')
+      .send(largePayload);
+
+    expect(res.status).toBe(413);
   });
 });
 

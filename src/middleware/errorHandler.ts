@@ -12,13 +12,18 @@ export class AppError extends Error {
 }
 
 export function errorHandler(
-  err: Error,
+  err: Error & { type?: string },
   req: Request,
   res: Response,
   _next: NextFunction,
 ): void {
   if (err instanceof AppError) {
     res.status(err.statusCode).json({ error: err.message });
+    return;
+  }
+
+  if (err.type === 'entity.too.large') {
+    res.status(413).json({ error: 'Request body too large' });
     return;
   }
 
