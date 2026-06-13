@@ -8,7 +8,10 @@ export const redis = new Redis(REDIS_URL, {
     if (times > 3) return null;
     return Math.min(times * 200, 2000);
   },
+  lazyConnect: true,
 });
+
+redis.on('error', () => {});
 
 const URL_TTL = 3600;
 const STATS_TTL = 30;

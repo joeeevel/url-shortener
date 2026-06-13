@@ -5,6 +5,7 @@ const { redisMock } = vi.hoisted(() => ({
     get: vi.fn(),
     setex: vi.fn(),
     del: vi.fn(),
+    on: vi.fn(),
   },
 }));
 
