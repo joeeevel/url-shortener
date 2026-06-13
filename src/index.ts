@@ -6,6 +6,7 @@ import { healthLimiter, shortenLimiter, redirectLimiter, statsLimiter } from './
 const prisma = new PrismaClient();
 const app = express();
 
+app.set('trust proxy', true);
 app.use(express.json());
 
 function generateShortCode(): string {
