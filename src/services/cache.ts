@@ -28,13 +28,16 @@ function cleanupMemory(): void {
 export let redis: Redis | null = null;
 
 if (REDIS_URL) {
+  const isTls = REDIS_URL.startsWith('rediss://');
   redis = new Redis(REDIS_URL, {
-    maxRetriesPerRequest: 3,
-    retryStrategy(times: number) {
-      if (times > 3) return null;
-      return Math.min(times * 200, 2000);
+    maxRetriesPerRequest: 1,
+    retryStrategy() {
+      return null;
     },
     lazyConnect: true,
+    connectTimeout: 5000,
+    enableOfflineQueue: false,
+    ...(isTls ? { tls: { rejectUnauthorized: false } } : {}),
   });
   redis.on('error', () => {});
 }
