@@ -31,10 +31,18 @@ if (REDIS_URL) {
   try {
     redis = createClient({ url: REDIS_URL });
     redis.on('error', () => {});
-    redis.connect().catch(() => {});
   } catch {
     // invalid URL, skip Redis
   }
+}
+
+let connecting: Promise<unknown> | null = null;
+
+function ensureConnected(): Promise<unknown> {
+  if (!redis) return Promise.resolve();
+  if (redis.isReady) return Promise.resolve();
+  if (!connecting) connecting = redis.connect().finally(() => { connecting = null; });
+  return connecting;
 }
 
 export function urlKey(shortCode: string): string {
@@ -51,6 +59,7 @@ export async function getCachedUrl(shortCode: string): Promise<{
 
   if (redis) {
     try {
+      await ensureConnected();
       const data = await redis.get(key);
       if (data) return JSON.parse(data);
     } catch {
@@ -78,6 +87,7 @@ export async function setCachedUrl(
 
   if (redis) {
     try {
+      await ensureConnected();
       await redis.setEx(key, 3600, serialized);
       return;
     } catch {
@@ -97,6 +107,7 @@ export async function invalidateUrl(shortCode: string): Promise<void> {
 
   if (redis) {
     try {
+      await ensureConnected();
       await redis.del(key);
     } catch {
       // ignore

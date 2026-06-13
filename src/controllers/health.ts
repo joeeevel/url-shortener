@@ -15,7 +15,15 @@ export async function health(req: Request, res: Response): Promise<void> {
   }
 
   if (redis) {
-    checks.redis = redis.isReady ? 'ok' : 'connecting';
+    try {
+      await Promise.race([
+        redis.ping(),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 3000)),
+      ]);
+      checks.redis = 'ok';
+    } catch {
+      checks.redis = 'unavailable';
+    }
   } else {
     checks.redis = 'unavailable';
   }
