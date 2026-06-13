@@ -6,7 +6,6 @@ services:
     branch: master
     plan: free
     region: oregon
-    dockerCommand: sh -c "npx prisma migrate deploy && npm start"
     healthCheckPath: /health
     autoDeploy: true
     envVars:
