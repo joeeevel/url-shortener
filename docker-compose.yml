@@ -56,7 +56,7 @@ services:
       - ./prisma:/app/prisma
     networks:
       - url-shortener-network
-    command: sh -c "npx prisma migrate deploy && npm run dev"
+    command: sh -c "npx prisma migrate deploy && npm start"
 
 networks:
   url-shortener-network:

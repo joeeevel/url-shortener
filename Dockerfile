@@ -1,6 +1,8 @@
 # Use Node 20 (latest stable)
 FROM node:20-alpine
 
+RUN apk add --no-cache openssl
+
 # Set working directory
 WORKDIR /app
 
