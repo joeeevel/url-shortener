@@ -1,9 +1,9 @@
 import { PrismaClient } from '@prisma/client';
 import express from 'express';
-import { getCachedUrl, setCachedUrl, invalidateUrl } from './services/cache.js';
+import { getCachedUrl, setCachedUrl } from './services/cache.js';
 
-const app = express();
 const prisma = new PrismaClient();
+const app = express();
 
 app.use(express.json());
 
@@ -124,10 +124,14 @@ app.get('/stats/:shortCode', async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 3000;
+export { app };
 
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
-  console.log(`📊 Health check: http://localhost:${PORT}/health`);
-  console.log(`🔗 Create short URLs: POST http://localhost:${PORT}/shorten`);
-});
+if (!process.env.VITEST) {
+  const PORT = process.env.PORT || 3000;
+
+  app.listen(PORT, () => {
+    console.log(`🚀 Server running on http://localhost:${PORT}`);
+    console.log(`📊 Health check: http://localhost:${PORT}/health`);
+    console.log(`🔗 Create short URLs: POST http://localhost:${PORT}/shorten`);
+  });
+}
