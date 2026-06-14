@@ -43,7 +43,7 @@ export async function shorten(req: Request, res: Response): Promise<void> {
 
   res.json({
     success: true,
-    shortUrl: `${req.protocol}://${req.get('host')}/${newUrl.shortCode}`,
+    shortUrl: `${req.get('x-forwarded-proto') || req.protocol}://${req.get('host')}/${newUrl.shortCode}`,
     shortCode: newUrl.shortCode,
     originalUrl: newUrl.original,
     clicks: newUrl.clicks,
