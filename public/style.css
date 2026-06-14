@@ -1,7 +1,7 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  font-family: 'Courier New', Courier, 'IBM Plex Mono', 'Source Code Pro', monospace;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background: #f5f0e8;
   background-image:
     radial-gradient(ellipse at 50% 0%, #faf6f0 0%, #f0ebe2 100%);
@@ -108,7 +108,7 @@ input:not([type=submit]):not([type=checkbox]) {
   background: #e2dbd0;
   color: #3a3530;
   font-size: 0.85rem;
-  font-family: 'Courier New', Courier, monospace;
+  font-family: inherit;
   width: 100%;
   outline: none;
   box-shadow:
@@ -147,7 +147,7 @@ input[readonly] {
   border-radius: 8px;
   font-size: 0.8rem;
   font-weight: 600;
-  font-family: 'Courier New', Courier, monospace;
+  font-family: inherit;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   cursor: pointer;
@@ -219,7 +219,7 @@ input[readonly] {
   border-radius: 6px;
   font-size: 0.7rem;
   font-weight: 600;
-  font-family: 'Courier New', Courier, monospace;
+  font-family: inherit;
   cursor: pointer;
   white-space: nowrap;
   text-transform: uppercase;
@@ -413,7 +413,7 @@ td.num {
   border-radius: 6px;
   font-size: 0.75rem;
   font-weight: 600;
-  font-family: 'Courier New', Courier, monospace;
+  font-family: inherit;
   cursor: pointer;
   color: #5a544c;
   background: #e2dbd0;
@@ -568,7 +568,7 @@ td.num {
   border-radius: 8px;
   font-weight: 500;
   font-size: 0.8rem;
-  font-family: 'Courier New', Courier, monospace;
+  font-family: inherit;
   z-index: 200;
   box-shadow:
     0 2px 8px rgba(0, 0, 0, 0.15);
