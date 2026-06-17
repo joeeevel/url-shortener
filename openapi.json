@@ -2,7 +2,7 @@
   "openapi": "3.0.3",
   "info": {
     "title": "Foxy URL Shortener API",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "description": "Shorten, track, and manage your URLs. Supports OAuth authentication and API keys.\n\n## Authentication\n- **Session Auth**: Login via Google or GitHub OAuth. Session cookie handled automatically.\n- **API Key Auth**: Pass `Authorization: Bearer <key>` header. Keys generated via `POST /api/keys`.\n\n## Rate Limiting\n- `POST /shorten`: 10 requests / 15 min\n- `GET /health`: 60 requests / 15 min\n- Redirects: 100 requests / 15 min\n- Stats: 30 requests / 15 min"
   },
   "servers": [
@@ -23,7 +23,8 @@
           "shortUrl": { "type": "string", "example": "https://example.com/abc123" },
           "shortCode": { "type": "string", "example": "abc123" },
           "originalUrl": { "type": "string", "example": "https://example.com/very-long-url" },
-          "clicks": { "type": "integer", "example": 0 }
+          "clicks": { "type": "integer", "example": 0 },
+          "expiresAt": { "type": "string", "format": "date-time", "nullable": true }
         }
       },
       "UrlList": {
@@ -44,6 +45,7 @@
           "clicks": { "type": "integer" },
           "totalClicks": { "type": "integer" },
           "active": { "type": "boolean" },
+          "expiresAt": { "type": "string", "format": "date-time", "nullable": true },
           "createdAt": { "type": "string", "format": "date-time" },
           "lastAccessed": { "type": "string", "format": "date-time" }
         }
@@ -189,7 +191,10 @@
                 "type": "object",
                 "required": ["url"],
                 "properties": {
-                  "url": { "type": "string", "format": "uri", "example": "https://example.com/very-long-url" }
+                  "url": { "type": "string", "format": "uri", "example": "https://example.com/very-long-url" },
+                  "slug": { "type": "string", "description": "Custom short code (3-30 chars)", "example": "my-link" },
+                  "webhook": { "type": "string", "format": "uri", "description": "URL to call on every click" },
+                  "ttl": { "type": "string", "enum": ["1h", "24h", "7d", "30d"], "description": "Time-to-live for the link" }
                 }
               }
             }
