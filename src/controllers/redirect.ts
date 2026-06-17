@@ -67,13 +67,12 @@ export async function redirect(req: Request, res: Response): Promise<void> {
       return;
     }
 
-    await prisma.url.update({
+    const updated = await prisma.url.update({
       where: { id: url.id },
       data: { clicks: { increment: 1 } },
     });
 
-    url.clicks += 1;
-    await setCachedUrl(shortCode, url);
+    await setCachedUrl(shortCode, updated);
 
     prisma.click.create({
       data: {

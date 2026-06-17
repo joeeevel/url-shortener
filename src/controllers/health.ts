@@ -25,7 +25,7 @@ export async function health(req: Request, res: Response): Promise<void> {
   res.json({
     status: 'ok',
     timestamp: new Date().toISOString(),
-    service: 'url-shortener',
+    service: 'foxy',
     checks,
   });
 }

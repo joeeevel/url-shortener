@@ -3,12 +3,16 @@ import { prisma } from '../lib/prisma.js';
 
 export async function listUrls(req: Request, res: Response): Promise<void> {
   const user = req.user as { id: string } | undefined;
+  if (!user) {
+    res.json({ urls: [], total: 0, page: 1, pages: 0 });
+    return;
+  }
   const page = Math.max(1, parseInt(req.query.page as string) || 1);
   const search = (req.query.search as string) || '';
   const limit = 50;
   const offset = (page - 1) * limit;
 
-  const where: Record<string, unknown> = user ? { userId: user.id } : {};
+  const where: Record<string, unknown> = { userId: user.id };
   if (search) {
     where.original = { contains: search, mode: 'insensitive' };
   }

@@ -10,11 +10,6 @@ const PHISHING_KEYWORDS = [
   'reset-password', 'password-reset', '2fa', 'two-factor',
 ];
 
-const SUSPICIOUS_SCRIPTS = [
-  '\u0430', '\u0435', '\u043E', '\u0440', '\u0441', '\u0443',
-  '\u0445', '\u0456', '\u04BB',
-];
-
 const BLOCKED_DOMAINS = new Set([
   'malware-site.com', 'phishing-site.com', 'example-login.com',
 ]);

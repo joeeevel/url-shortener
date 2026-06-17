@@ -39,5 +39,5 @@ export async function exportAnalyticsCsv(req: Request, res: Response): Promise<v
 
   res.setHeader('Content-Type', 'text/csv');
   res.setHeader('Content-Disposition', `attachment; filename="${shortCode}-analytics.csv"`);
-  res.send(header + rows);
+  res.send(header + (rows || ''));
 }
