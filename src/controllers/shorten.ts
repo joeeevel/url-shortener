@@ -7,6 +7,7 @@ import { validateTargetUrl } from '../lib/validateUrl.js';
 
 const shortenSchema = z.object({
   url: z.string().url('Invalid URL format'),
+  slug: z.string().regex(/^[a-zA-Z0-9_-]{3,30}$/, 'Slug must be 3-30 characters: letters, numbers, hyphens, underscores').optional(),
   webhook: z.string().url('Invalid webhook URL').optional().or(z.literal('')),
 });
 
@@ -29,7 +30,15 @@ export async function shorten(req: Request, res: Response): Promise<void> {
     return;
   }
 
-  const shortCode = generateShortCode();
+  let shortCode = parsed.data.slug || generateShortCode();
+
+  if (parsed.data.slug) {
+    const existing = await prisma.url.findUnique({ where: { shortCode } });
+    if (existing) {
+      res.status(409).json({ error: 'Slug is already taken' });
+      return;
+    }
+  }
 
   const newUrl = await prisma.url.create({
     data: {
