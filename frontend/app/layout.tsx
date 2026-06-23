@@ -6,6 +6,7 @@ import { Inter } from 'next/font/google';
 import localFont from 'next/font/local';
 import "./globals.css";
 import { Features } from "@/src/components/sections/features";
+import { Pricing } from "@/src/components/sections/pricing";
 const sfPro = localFont({
   src: [
     {
@@ -81,6 +82,7 @@ export default function RootLayout({
 
           <Hero />
           <Features />
+          <Pricing />
         </main>
 
 
