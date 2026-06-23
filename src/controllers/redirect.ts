@@ -1,4 +1,4 @@
-import type { Request, Response } from 'express';
+import type { Request, Response, NextFunction } from 'express';
 import { prisma } from '../lib/prisma.js';
 import { getCachedUrl, setCachedUrl } from '../services/cache.js';
 import { fireWebhook } from '../services/webhook.js';
@@ -9,7 +9,7 @@ function isExpired(expiresAt: string | Date | null | undefined): boolean {
   return expiry < new Date();
 }
 
-export async function redirect(req: Request, res: Response): Promise<void> {
+export async function redirect(req: Request, res: Response, next: NextFunction): Promise<void> {
   const shortCode = req.params.shortCode;
   if (!shortCode) {
     res.status(404).json({ error: 'Short URL not found' });
@@ -58,6 +58,10 @@ export async function redirect(req: Request, res: Response): Promise<void> {
     const url = await prisma.url.findUnique({ where: { shortCode } });
 
     if (!url || !url.active) {
+      if (req.accepts('html')) {
+        next();
+        return;
+      }
       res.status(404).json({ error: 'Short URL not found' });
       return;
     }

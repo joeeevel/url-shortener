@@ -13,6 +13,12 @@ COPY tsconfig.json ./
 COPY src ./src/
 RUN npm run build
 
+WORKDIR /app/frontend
+COPY frontend/package*.json ./
+RUN npm ci
+COPY frontend/ ./
+RUN npm run build
+
 FROM node:20-alpine AS runner
 
 RUN apk add --no-cache openssl
@@ -26,6 +32,7 @@ COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/dist ./dist
 COPY openapi.json ./
 COPY --from=builder /app/package*.json ./
+COPY --from=builder /app/frontend/out ./frontend/out
 
 USER appuser
 

@@ -58,8 +58,18 @@ if (!process.env.VITEST) {
 
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(openapiSpec));
 
+const frontendOut = resolve(__dirname, '..', 'frontend', 'out');
+app.use(express.static(frontendOut));
+
 app.use(router);
 
+app.get('*', (req, res, next) => {
+  if (req.accepts('html')) {
+    res.sendFile(resolve(frontendOut, 'index.html'));
+  } else {
+    next();
+  }
+});
 app.use(notFound);
 app.use(errorHandler);
 

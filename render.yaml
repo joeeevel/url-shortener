@@ -3,7 +3,7 @@ services:
     name: url-shortener
     runtime: docker
     repo: https://github.com/joeeevel/url-shortener
-    branch: master
+    branch: main
     plan: free
     region: oregon
     healthCheckPath: /health
